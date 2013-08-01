@@ -157,7 +157,7 @@ class @Chosen extends AbstractChosen
     @active_field = true
 
     @search_field.value = @search_field.value
-    @search_field.focus()
+    @search_field.focus() unless @disable_search
 
   test_active_click: (evt) ->
     if evt.target.up('.chosen-container') is @container
@@ -222,7 +222,7 @@ class @Chosen extends AbstractChosen
 
     @results_showing = true
 
-    @search_field.focus()
+    @search_field.focus() unless @disable_search
     @search_field.value = @search_field.value
 
     this.winnow_results()
@@ -267,7 +267,7 @@ class @Chosen extends AbstractChosen
     if target
       @result_highlight = target
       this.result_select(evt)
-      @search_field.focus()
+      @search_field.focus() unless @disable_search
 
   search_results_mouseover: (evt) ->
     target = if evt.target.hasClassName("active-result") then evt.target else evt.target.up(".active-result")
