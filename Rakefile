@@ -4,8 +4,8 @@ require File.expand_path('../lib/chosen-rails/source_file', __FILE__)
 
 desc "Update with Harvest's Chosen Library"
 task 'update-chosen', 'repository_url', 'branch' do |task, args|
-  remote = args['repository_url'] || 'https://github.com/harvesthq/chosen'
-  branch = args['branch'] || 'master'
+  remote = args['repository_url'] || 'https://github.com/gorner/chosen'
+  branch = args['branch'] || 'j-ui-kit'
   files = SourceFile.new
   files.fetch remote, branch
   files.eject_javascript_class_from_closure

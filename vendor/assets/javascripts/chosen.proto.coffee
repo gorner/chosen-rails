@@ -12,6 +12,16 @@ class @Chosen extends AbstractChosen
     @multi_temp = new Template('<ul class="chosen-choices"><li class="search-field"><input type="text" value="#{default}" class="default" autocomplete="off" style="width:25px;" /></li></ul><div class="chosen-drop"><ul class="chosen-results"></ul></div>')
     @no_results_temp = new Template('<li class="no-results">' + @results_none_found + ' "<span>#{terms}</span>"</li>')
 
+  container_width: ->
+    if @options.width?
+      return @options.width
+    else
+      if @form_field.offsetWidth is 0
+        return @form_field.getWidth() + "px"
+      else
+        return "#{@form_field.offsetWidth}px"
+
+
   set_up_html: ->
     container_classes = ["chosen-container"]
     container_classes.push "chosen-container-" + (if @is_multiple then "multi" else "single")

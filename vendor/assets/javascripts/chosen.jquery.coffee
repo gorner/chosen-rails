@@ -24,6 +24,15 @@ class Chosen extends AbstractChosen
     @current_selectedIndex = @form_field.selectedIndex
     @is_rtl = @form_field_jq.hasClass "chosen-rtl"
 
+  container_width: ->
+    if @options.width?
+      return @options.width
+    else
+      if @form_field.offsetWidth is 0
+        return @form_field_jq.width() + "px"
+      else
+        return "#{@form_field.offsetWidth}px"
+
   set_up_html: ->
     container_classes = ["chosen-container"]
     container_classes.push "chosen-container-" + (if @is_multiple then "multi" else "single")
