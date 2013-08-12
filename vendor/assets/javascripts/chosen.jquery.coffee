@@ -22,6 +22,15 @@ class Chosen extends AbstractChosen
   finish_setup: ->
     @form_field_jq.addClass "chzn-done"
 
+  container_width: ->
+    if @options.width?
+      return @options.width
+    else
+      if @form_field.offsetWidth is 0
+        return @form_field_jq.width() + "px"
+      else
+        return "#{@form_field.offsetWidth}px"
+
   set_up_html: ->
     @container_id = if @form_field.id.length then @form_field.id.replace(/[^\w]/g, '_') else this.generate_field_id()
     @container_id += "_chzn"
@@ -148,7 +157,7 @@ class Chosen extends AbstractChosen
     @active_field = true
 
     @search_field.val(@search_field.val())
-    @search_field.focus()
+    @search_field.focus() unless @disable_search
 
 
   test_active_click: (evt) ->
@@ -219,7 +228,7 @@ class Chosen extends AbstractChosen
 
     @results_showing = true
 
-    @search_field.focus()
+    @search_field.focus() unless @disable_search
     @search_field.val @search_field.val()
 
     this.winnow_results()
@@ -264,7 +273,7 @@ class Chosen extends AbstractChosen
     if target.length
       @result_highlight = target
       this.result_select(evt)
-      @search_field.focus()
+      @search_field.focus() unless @disable_search
 
   search_results_mouseover: (evt) ->
     target = if $(evt.target).hasClass "active-result" then $(evt.target) else $(evt.target).parents(".active-result").first()

@@ -17,6 +17,16 @@ class Chosen extends AbstractChosen
     @multi_temp = new Template('<ul class="chzn-choices"><li class="search-field"><input type="text" value="#{default}" class="default" autocomplete="off" style="width:25px;" /></li></ul><div class="chzn-drop"><ul class="chzn-results"></ul></div>')
     @no_results_temp = new Template('<li class="no-results">' + @results_none_found + ' "<span>#{terms}</span>"</li>')
 
+  container_width: ->
+    if @options.width?
+      return @options.width
+    else
+      if @form_field.offsetWidth is 0
+        return @form_field.getWidth() + "px"
+      else
+        return "#{@form_field.offsetWidth}px"
+
+
   set_up_html: ->
     @container_id = @form_field.identify().replace(/[^\w]/g, '_') + "_chzn"
 
@@ -137,7 +147,7 @@ class Chosen extends AbstractChosen
     @active_field = true
 
     @search_field.value = @search_field.value
-    @search_field.focus()
+    @search_field.focus() unless @disable_search
 
   test_active_click: (evt) ->
     if evt.target.up('#' + @container_id)
@@ -206,7 +216,7 @@ class Chosen extends AbstractChosen
 
     @results_showing = true
 
-    @search_field.focus()
+    @search_field.focus() unless @disable_search
     @search_field.value = @search_field.value
 
     this.winnow_results()
@@ -251,7 +261,7 @@ class Chosen extends AbstractChosen
     if target
       @result_highlight = target
       this.result_select(evt)
-      @search_field.focus()
+      @search_field.focus() unless @disable_search
 
   search_results_mouseover: (evt) ->
     target = if evt.target.hasClassName("active-result") then evt.target else evt.target.up(".active-result")
