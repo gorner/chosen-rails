@@ -75,6 +75,9 @@ class Chosen extends AbstractChosen
     @form_field_jq.trigger("chosen:ready", {chosen: this})
 
   register_observers: ->
+    @container.bind 'touchstart.chosen', (evt) => this.container_mousedown(evt); return
+    @container.bind 'touchend.chosen', (evt) => this.container_mouseup(evt); return
+
     @container.bind 'mousedown.chosen', (evt) => this.container_mousedown(evt); return
     @container.bind 'mouseup.chosen', (evt) => this.container_mouseup(evt); return
     @container.bind 'mouseenter.chosen', (evt) => this.mouse_enter(evt); return
@@ -472,7 +475,7 @@ class Chosen extends AbstractChosen
         @mouse_on_container = false
         break
       when 13
-        evt.preventDefault()
+        evt.preventDefault() if this.results_showing
         break
       when 38
         evt.preventDefault()

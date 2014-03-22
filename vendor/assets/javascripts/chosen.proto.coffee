@@ -59,6 +59,9 @@ class @Chosen extends AbstractChosen
     @form_field.fire("chosen:ready", {chosen: this})
 
   register_observers: ->
+    @container.observe "touchstart", (evt) => this.container_mousedown(evt)
+    @container.observe "touchend", (evt) => this.container_mouseup(evt)
+
     @container.observe "mousedown", (evt) => this.container_mousedown(evt)
     @container.observe "mouseup", (evt) => this.container_mouseup(evt)
     @container.observe "mouseenter", (evt) => this.mouse_enter(evt)
@@ -472,7 +475,7 @@ class @Chosen extends AbstractChosen
         @mouse_on_container = false
         break
       when 13
-        evt.preventDefault()
+        evt.preventDefault() if this.results_showing
         break
       when 38
         evt.preventDefault()
