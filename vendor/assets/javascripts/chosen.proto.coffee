@@ -77,11 +77,14 @@ class @Chosen extends AbstractChosen
     @form_field.observe "chosen:updated", (evt) => this.results_update_field(evt)
     @form_field.observe "chosen:activate", (evt) => this.activate_field(evt)
     @form_field.observe "chosen:open", (evt) => this.container_mousedown(evt)
+    @form_field.observe "chosen:close", (evt) => this.input_blur(evt)
 
     @search_field.observe "blur", (evt) => this.input_blur(evt)
     @search_field.observe "keyup", (evt) => this.keyup_checker(evt)
     @search_field.observe "keydown", (evt) => this.keydown_checker(evt)
     @search_field.observe "focus", (evt) => this.input_focus(evt)
+    @search_field.observe "cut", (evt) => this.clipboard_event_checker(evt)
+    @search_field.observe "paste", (evt) => this.clipboard_event_checker(evt)
 
     if @is_multiple
       @search_choices.observe "click", (evt) => this.choices_click(evt)
@@ -89,7 +92,7 @@ class @Chosen extends AbstractChosen
       @container.observe "click", (evt) => evt.preventDefault() # gobble click of anchor
 
   destroy: ->
-    document.stopObserving "click", @click_test_action
+    @container.ownerDocument.stopObserving "click", @click_test_action
 
     @form_field.stopObserving()
     @container.stopObserving()
@@ -102,7 +105,7 @@ class @Chosen extends AbstractChosen
       @container.select(".search-choice-close").each (choice) ->
         choice.stopObserving()
     else
-      @selected_item.stopObserving() 
+      @selected_item.stopObserving()
 
     if @search_field.tabIndex
       @form_field.tabIndex = @search_field.tabIndex
@@ -130,7 +133,7 @@ class @Chosen extends AbstractChosen
       if not (evt? and evt.target.hasClassName "search-choice-close")
         if not @active_field
           @search_field.clear() if @is_multiple
-          document.observe "click", @click_test_action
+          @container.ownerDocument.observe "click", @click_test_action
           this.results_show()
         else if not @is_multiple and evt and (evt.target is @selected_item || evt.target.up("a.chosen-single"))
           this.results_toggle()
@@ -151,7 +154,7 @@ class @Chosen extends AbstractChosen
     this.close_field() if not @active_field and @container.hasClassName("chosen-container-active")
 
   close_field: ->
-    document.stopObserving "click", @click_test_action
+    @container.ownerDocument.stopObserving "click", @click_test_action
 
     @active_field = false
     this.results_hide()
@@ -339,7 +342,7 @@ class @Chosen extends AbstractChosen
         high.removeClassName("active-result")
       else
         this.reset_single_select_options()
-      
+
       high.addClassName("result-selected")
 
       item = @results_data[ high.getAttribute("data-option-array-index") ]
@@ -408,6 +411,7 @@ class @Chosen extends AbstractChosen
 
   no_results: (terms) ->
     @search_results.insert @no_results_temp.evaluate( terms: terms )
+    @form_field.fire("chosen:no_results", {chosen: this})
 
   no_results_clear: ->
     nr = null
