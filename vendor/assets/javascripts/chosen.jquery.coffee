@@ -176,7 +176,7 @@ class Chosen extends AbstractChosen
     @active_field = true
 
     @search_field.val(@search_field.val())
-    @search_field.focus() unless @disable_search
+    @search_field.focus() unless @search_disabled()
 
 
   test_active_click: (evt) ->
@@ -196,7 +196,7 @@ class Chosen extends AbstractChosen
       @search_choices.find("li.search-choice").remove()
     else if not @is_multiple
       this.single_set_selected_text()
-      if @disable_search or @form_field.options.length <= @disable_search_threshold
+      if @search_disabled()
         @search_field[0].readOnly = true
         @container.addClass "chosen-container-single-nosearch"
       else
@@ -242,7 +242,7 @@ class Chosen extends AbstractChosen
     @container.addClass "chosen-with-drop"
     @results_showing = true
 
-    @search_field.focus() unless @disable_search
+    @search_field.focus() unless @search_disabled()
     @search_field.val @search_field.val()
 
     this.winnow_results()
@@ -288,7 +288,7 @@ class Chosen extends AbstractChosen
     if target.length
       @result_highlight = target
       this.result_select(evt)
-      @search_field.focus() unless @disable_search
+      @search_field.focus() unless @search_disabled() or !@is_multiple
 
   search_results_mouseover: (evt) ->
     target = if $(evt.target).hasClass "active-result" then $(evt.target) else $(evt.target).parents(".active-result").first()
@@ -408,7 +408,6 @@ class Chosen extends AbstractChosen
     if @search_field.val() is @default_text then "" else $('<div/>').text($.trim(@search_field.val())).html()
 
   winnow_results_set_highlight: ->
-
     selected_results = if not @is_multiple then @search_results.find(".result-selected.active-result") else []
     do_high = if selected_results.length then selected_results.first() else @search_results.find(".active-result").first()
 
